@@ -6,6 +6,8 @@ import get from 'lodash/get';
 import { crudGetManyAccumulate as crudGetManyAccumulateAction } from '../../actions';
 import { getReferencesByIds } from '../../reducer/admin/references/oneToMany';
 
+const getStringIds = ids => ids.map(x => typeof x === 'string' ? x : x.id)
+
 /**
  * A container component that fetches records from another resource specified
  * by an array of *ids* in current record.
@@ -67,7 +69,7 @@ export class ReferenceArrayFieldController extends Component {
 
         return children({
             isLoading: ids.length !== 0 && !data,
-            ids,
+            ids: getStringIds(ids),
             data,
             referenceBasePath,
             currentSort: {},
@@ -96,7 +98,7 @@ const mapStateToProps = (state, props) => {
     const { record, source, reference } = props;
     const ids = get(record, source) || [];
     return {
-        data: getReferencesByIds(state, reference, ids),
+        data: getReferencesByIds(state, reference, getStringIds(ids)),
         ids,
     };
 };
